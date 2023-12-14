@@ -8,6 +8,7 @@ A Symmetrical Disguise (SD) scheme  It is built on top of the SEAL (for HE) and 
 SEAL==4.0.0
 CMAKE>=3.13
 CPP==9.4.0
+openssl>=3.0.10
 ```
 
 ## How to run
