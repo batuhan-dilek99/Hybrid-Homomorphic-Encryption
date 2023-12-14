@@ -133,10 +133,10 @@ class CSP{
         //Decrypt F function
             string command1 = "openssl enc -d -aes-256-cbc -in fFunction.txt.enc -out fFunction.txt.dec --pass pass:";
             string command2 = " 2> /dev/null";
-            string commandFull = string(command1) + string(password);// + string(command2);
+            string commandFull = string(command1) + string(password) + string(command2);
             int evkDecCommand = system(commandFull.c_str());
             if(!evkDecCommand){
-                cout << "[+] evk file has been decrypted successfully" << endl;
+                cout << "[+] F function file has been decrypted successfully" << endl;
             }
         //-----------------
 
@@ -347,7 +347,7 @@ class Analyst{
             }
             passwordFile.close();
             //Constructing the command string for the signing operation
-            string signCommandString = string("openssl enc -aes-256-cbc -in analystRelFile.txt -out analystRelFile.txt.enc --pass pass:") + string(password) + string(" 2> /dev/null");
+            string signCommandString = string("openssl enc -aes-256-cbc -in fFunction.txt -out fFunction.txt.enc --pass pass:") + string(password) + string(" 2> /dev/null");
             //signing evk with analyst signature
             int signCommand = system(signCommandString.c_str());
             if(!signCommand){
