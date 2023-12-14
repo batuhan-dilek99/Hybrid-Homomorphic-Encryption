@@ -39,12 +39,19 @@ class CSP{
         }
 
         void generateRSAkeys(){
+            chrono::high_resolution_clock::time_point start, end;
+            chrono::milliseconds result;
+            start = chrono::high_resolution_clock::now();
             int command1 = system("openssl genrsa -out cspPriv.pem 2048");
             int command2 = system("openssl rsa -in cspPriv.pem -outform PEM -pubout -out cspPub.pem");
             if (!(command1 && command2)){
                 cout << "[+] openssl worked successfully" << endl;
             }
+            end = chrono::high_resolution_clock::now();
+            result = chrono::duration_cast<chrono::milliseconds>(end-start);
             cout << "[+] RSA key pair is generated and each key is stored in a .pem file" << endl;
+            cout << "\t[?] Took " << result.count() << " milliseconds" << endl;
+            
         }
 
         void processMessageFromAnalyst(SEALContext context, ifstream& file){

@@ -31,7 +31,8 @@ class CSP{
         vector<Ciphertext> cprime;
         Ciphertext cres;
 
-        chrono::milliseconds decomp, eval;
+        chrono::milliseconds decomp;
+        size_t eval;
     //Methods
 
         CSP(shared_ptr<SEALContext> context2){
@@ -146,15 +147,18 @@ class CSP{
             chrono::high_resolution_clock::time_point start, end;
             chrono::milliseconds result;
 
-            start = chrono::high_resolution_clock::now();
             BatchEncoder analystHEBatch(*context);
             Encryptor analystHEEncryptor(*context, analystHePub);
             Evaluator analystHEEvaluator(*context);
+            eval = 0;
             for (unsigned int i = 0; i < this->cprime.size(); i++){
+                start = chrono::high_resolution_clock::now();
                 packed_enc_multiply(this->cprime[i], f, this->cres, analystHEEvaluator);
+                end = chrono::high_resolution_clock::now();
+                chrono::milliseconds temp = chrono::duration_cast<chrono::milliseconds>(end - start);
+                this->eval += temp.count();
+
             }
-            end = chrono::high_resolution_clock::now();
-            this->eval = chrono::duration_cast<chrono::milliseconds>(end - start);
             //cout << "[+] CSP has evaluated Cres" << endl;
             //packed_enc_addition(this->cres, Analyst.b_c, CSP.c_res, analystHEEvaluator);
         }
@@ -436,8 +440,8 @@ class User{
 
 struct Objective{
     int inputCount;
-    chrono::milliseconds HHEDecomp, HHEEval, HHEDec;
-    size_t SKEenc;
+    chrono::milliseconds HHEDecomp, HHEDec;
+    size_t SKEenc, HHEEval;
 };
 
 int main(void){
@@ -546,7 +550,7 @@ int main(void){
         iterations[i].HHEDecomp = csp.decomp;
         iterations[i].HHEEval = csp.eval;
         iterations[i].HHEDec = analyst.hheDecMil;
-    cout <<iterations[i].inputCount << "\t\t" << iterations[i].SKEenc << "\t\t" << iterations[i].HHEDecomp.count() << "\t\t" << iterations[i].HHEEval.count() << "\t\t" << iterations[i].HHEDec.count() << endl;
+    cout <<iterations[i].inputCount << "\t\t" << iterations[i].SKEenc << "\t\t" << iterations[i].HHEDecomp.count() << "\t\t" << iterations[i].HHEEval << "\t\t" << iterations[i].HHEDec.count() << endl;
     }
 
     return 0;
